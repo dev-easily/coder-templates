@@ -1,0 +1,68 @@
+#cloud-config
+users:
+    ## 用户名是你的 coder 登录名称，git 登录也会使用这个名称，以及你的 coder 邮件地址
+  - name: ${username}
+    ## 密码是123
+    passwd: "$6$EfIBff.MuVM6lpz.$0xW6J8G0mLrkcl1STQbB5NDTesmNDhjSAAz19kT9qAo0ELWv.uzAh7ZXW6em3J4vr6Mg/878POlAKGanxS6OW."
+    shell: /bin/bash
+    lock-passwd: false
+    ssh_pwauth: True
+    chpasswd: { expire: False }
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: sudo
+packages:
+  - git
+  - curl
+  - jq
+write_files:
+  - path: /opt/coder/init
+    permissions: "0755"
+    encoding: b64
+    content: ${init_script}
+  - path: /etc/systemd/system/coder-agent.service
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Coder Agent
+      After=network-online.target
+      Wants=network-online.target
+
+      [Service]
+      User=${username}
+      ExecStart=/opt/coder/init
+      Environment=CODER_AGENT_TOKEN=${coder_agent_token}
+      Restart=always
+      RestartSec=10
+      TimeoutStopSec=90
+      KillMode=process
+
+      OOMScoreAdjust=-900
+      SyslogIdentifier=coder-agent
+
+      [Install]
+      WantedBy=multi-user.target
+%{ if code_server_setup ~}
+  - path: /tmp/install_code_server.sh
+    permissions: "0777"
+    content: |
+      #!/bin/bash
+      CODE_SERVER_DOWNLOAD_URL=$(curl -sL https://api.github.com/repos/coder/code-server/releases/latest | jq -r '.assets[].browser_download_url' | grep "amd64.deb")
+      curl -fL https://mirror.ghproxy.com/$CODE_SERVER_DOWNLOAD_URL -o /tmp/code_server.deb
+      dpkg -i /tmp/code_server.deb
+      systemctl enable --now code-server@${username}
+      rm /tmp/code_server.deb
+  - path: /home/${username}/.config/code-server/config.yaml
+    permissions: "0644"
+    content: |
+      bind-addr: 0.0.0.0:1024
+      auth: false
+      cert: false
+%{ endif ~}
+runcmd:
+  - chown ${username}:${username} /home/${username}
+  - systemctl enable coder-agent
+  - systemctl start coder-agent
+%{ if code_server_setup ~}
+  - /tmp/install_code_server.sh
+  - rm /tmp/install_code_server.sh
+%{ endif }
