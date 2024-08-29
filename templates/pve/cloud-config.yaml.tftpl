@@ -46,11 +46,8 @@ write_files:
     permissions: "0777"
     content: |
       #!/bin/bash
-      CODE_SERVER_DOWNLOAD_URL=$(curl -sL https://api.github.com/repos/coder/code-server/releases/latest | jq -r '.assets[].browser_download_url' | grep "amd64.deb")
-      curl -fL https://mirror.ghproxy.com/$CODE_SERVER_DOWNLOAD_URL -o /tmp/code_server.deb
-      dpkg -i /tmp/code_server.deb
-      systemctl enable --now code-server@${username}
-      rm /tmp/code_server.deb
+      snap install code-server
+      code-server --auth none --port 1024 >/tmp/code-server.log 2>&1 &
   - path: /home/${username}/.config/code-server/config.yaml
     permissions: "0644"
     content: |

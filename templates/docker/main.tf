@@ -34,16 +34,22 @@ resource "coder_agent" "main" {
       cp -rT /etc/skel ~
       touch ~/.init_done
     fi
+    echo "start to install code server in main.tf"
+    uname -a
+    # CODE_SERVER_DOWNLOAD_URL=$(curl -sL https://api.github.com/repos/coder/code-server/releases/latest | jq -r '.assets[].browser_download_url' | grep "amd64.deb")
+    # curl -fL https://mirror.ghproxy.com/$CODE_SERVER_DOWNLOAD_URL -o /tmp/code_server.deb
+    # dpkg -i /tmp/code_server.deb
+    # code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
 
-    CODE_SERVER_DOWNLOAD_URL=$(curl -sL https://api.github.com/repos/coder/code-server/releases/latest | jq -r '.assets[].browser_download_url' | grep "amd64.deb")
-    curl -fL https://mirror.ghproxy.com/$CODE_SERVER_DOWNLOAD_URL -o /tmp/code_server.deb
-    dpkg -i /tmp/code_server.deb
-    code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
     # Install the latest code-server.
     # Append "--version x.x.x" to install a specific version of code-server.
     # curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server
     # Start code-server in the background.
     # /tmp/code-server/bin/code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
+
+    snap install code-server
+    code-server --auth none --port 1024 >/tmp/code-server.log 2>&1 &
+
   EOT
 
   # These environment variables allow you to make Git commits right away after creating a
