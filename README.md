@@ -1,3 +1,6 @@
+![image](https://github.com/user-attachments/assets/4c29af9a-8b18-412e-9397-cff28edb03c9)
+
+
 本仓库提供了一个离线安装 coder 的示例，两个可以使用的 coder 模板：
 
 1. 在 proxmox 上快速搭建 vm
