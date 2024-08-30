@@ -191,7 +191,8 @@ resource "docker_image" "main" {
   build {
     context = "./build"
     build_args = {
-      USER = local.username
+      # 登录用户名
+      USER = local.username 
     }
   }
   triggers = {
@@ -214,7 +215,7 @@ resource "docker_container" "workspace" {
     ip   = "host-gateway"
   }
   volumes {
-    container_path = "/home/${local.username}"
+    container_path = "/home/${local.username}" # /home/登录用户名
     volume_name    = docker_volume.home_volume.name
     read_only      = false
   }

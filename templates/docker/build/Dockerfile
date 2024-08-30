@@ -22,9 +22,15 @@ RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted 
     ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 
+ARG USER=coder
+RUN useradd -m -d /home/$USER --groups sudo --shell /bin/bash ${USER} \
+  && echo "${USER} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USER} \
+  && chmod 0440 /etc/sudoers.d/${USER}
+
+USER ${USER}
 
 # python
-RUN apt install python3 python3-pip -y && pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/ && \
+RUN sudo apt install python3 python3-pip -y && pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/ && \
     pip config set global.index https://mirrors.aliyun.com/pypi && \
     pip config set global.trusted-host mirrors.aliyun.com && \
     pip install setuptools
@@ -32,8 +38,8 @@ RUN apt install python3 python3-pip -y && pip config set global.index-url https:
 # golang
 RUN cd "/tmp" && \
     wget https://golang.google.cn/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
-    rm -rf /usr/local/go && tar -C /opt -xzf go${GO_VERSION}.linux-amd64.tar.gz && \
-    ln -s "/opt/go/bin/"* "/usr/bin/" && \
+    sudo rm -rf /usr/local/go && sudo tar -C /opt -xzf go${GO_VERSION}.linux-amd64.tar.gz && \
+    sudo ln -s "/opt/go/bin/"* "/usr/bin/" && \
     go version && \
     go env -w GO111MODULE=on && \
     go env -w GOPROXY=https://mirrors.aliyun.com/goproxy/,direct && \
@@ -42,29 +48,22 @@ RUN cd "/tmp" && \
 # nodejs
 RUN cd "/tmp" && \
     wget https://registry.npmmirror.com/-/binary/node/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz && \
-    tar xvf node-v${NODE_VERSION}-linux-x64.tar.xz -C /opt/ && \
-    ln -s "/opt/node-v20.13.1-linux-x64/bin/"* "/usr/bin/" && \
+    sudo tar xvf node-v${NODE_VERSION}-linux-x64.tar.xz -C /opt/ && \
+    sudo ln -s "/opt/node-v20.13.1-linux-x64/bin/"* "/usr/bin/" && \
     node --version && \
     npm config set registry https://registry.npmmirror.com && \
     #wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash - && \
     #pnpm setup && \
     npm install --global node-gyp && \
     rm -r "/tmp/"*
-    
-#ARG USER=coder
-#RUN useradd --groups sudo --no-create-home --shell /bin/bash ${USER} \
-#&& echo "${USER} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USER} \
-#&& chmod 0440 /etc/sudoers.d/${USER}
-#USER ${USER}
-   
+  
 # rust
-ADD config.toml /root/.cargo/config.toml
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
-    whoami && \
-    #echo "export PATH=/root/.cargo/bin/:\$PATH" >> /etc/bashrc && \
-    echo ". /root/.cargo/env" >> /root/.bash_profile && \
-    . /root/.cargo/env && \
-    cat /root/.cargo/config.toml && \
+ADD config.toml /home/$USER/.cargo/config.toml
+RUN sudo chown $USER: /home/$USER/ -R && \
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
+    echo ". ~/.cargo/env" >> /home/$USER/.bash_profile && \
+    . /home/$USER/.cargo/env && \
+    cat /home/$USER/.cargo/config.toml && \
     cargo install crm
 
 # openjdk 17
@@ -72,13 +71,13 @@ RUN	cd "/tmp" && \
     wget "https://mirrors.tuna.tsinghua.edu.cn/Adoptium/17/jdk/x64/linux/OpenJDK17U-jdk_x64_linux_hotspot_17.0.12_7.tar.gz" && \
     tar -xzf "OpenJDK17U-jdk_x64_linux_hotspot_17.0.12_7.tar.gz" && \
     ls /tmp/ && \
-    mv "/tmp/jdk-17.0.12+7" "/opt/" && \
-    ln -s "/opt/jdk-17.0.12+7/bin/"* "/usr/bin/" && \
+    sudo mv "/tmp/jdk-17.0.12+7" "/opt/" && \
+    sudo ln -s "/opt/jdk-17.0.12+7/bin/"* "/usr/bin/" && \
     rm "/tmp/"* && \
     echo 'public class Main { public static void main(String[] args) { System.out.println("Java code is 正常运行中!"); } }' > Main.java && \
     javac -encoding ISO-8859-1 Main.java && \
     java Main && \
     rm -r "/tmp/"*
-ADD ./settings.xml /root/.m2/settings.xml
+ADD ./settings.xml /home/$USER/.m2/settings.xml
 
-WORKDIR /root
+WORKDIR /home/$USER
