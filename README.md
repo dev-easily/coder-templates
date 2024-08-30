@@ -58,9 +58,9 @@ coder 官网给出了离线版 coder 的安装步骤，但是仍然建议你用�
 
 1. 登录 coder，点击 Templates，创建一个模板
 2. 可以选择 scratch 从 0 创建，然后将本仓库的 templates 下的 pve 中的文件粘贴进去
-3. 也可以将本仓库的 templates 下的 pve 中的文件，压缩上传
+3. 也可以将本仓库的 templates 下的 pve 中的文件，压缩上传。注意，优选 tar格式，zip 经我实测会卡住。
    ```text
-   pve.zip
+   pve.tar
       | -- main.tf
       | -- cloud-config.yaml.tfpl
    ```
@@ -78,9 +78,9 @@ coder 官网给出了离线版 coder 的安装步骤，但是仍然建议你用�
 ### 步骤
 1. 点击 Templates，创建一个模板
 2. 可以选择 scratch 从 0 创建，然后将本仓库的 templates 下的 docker 中的文件粘贴进去
-3. 也可以将本仓库的 templates 下的 docker 中的文件，压缩上传
+3. 也可以将本仓库的 templates 下的 docker 中的文件，压缩上传。注意，优选 tar格式，zip 经我实测会卡住。
    ```text
-   docker.zip
+   docker.tar
       | -- main.tf
       | -- build
           | -- *
