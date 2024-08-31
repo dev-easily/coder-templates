@@ -1,3 +1,4 @@
+# docker build --build-arg USER=youruser .
 FROM ubuntu:22.04
 
 ENV GO_VERSION=1.22.3
@@ -11,6 +12,7 @@ ENV ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
 ENV ELECTRON_CUSTOM_DIR=30.0.6
 ENV ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/
 
+ARG USER=coder
 # you know why
 RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse" > /etc/apt/sources.list && \
     echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
@@ -20,12 +22,10 @@ RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted 
     apt-get install curl git sudo vim wget locales libfreetype6 fontconfig build-essential jq -y && \
     fc-cache --force && \
     ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
-    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
-
-ARG USER=coder
-RUN useradd -m -d /home/$USER --groups sudo --shell /bin/bash ${USER} \
-  && echo "${USER} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USER} \
-  && chmod 0440 /etc/sudoers.d/${USER}
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen && \
+    useradd -m -d /home/$USER --groups sudo --shell /bin/bash ${USER} && \
+    echo "${USER} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USER} && \
+    chmod 0440 /etc/sudoers.d/${USER}
 
 USER ${USER}
 
