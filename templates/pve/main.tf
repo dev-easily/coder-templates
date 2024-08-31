@@ -211,7 +211,7 @@ resource "proxmox_vm_qemu" "root" {
   name = "coder-${data.coder_workspace_owner.me.name}-${lower(data.coder_workspace.me.name)}"
   desc = "Coder workspace for ${data.coder_workspace_owner.me.name} (${data.coder_workspace.me.name})"
 
-  target_node = "pve"
+  target_node = "请修改：pve 的节点（node）"
   clone       = "请修改：要克隆的虚拟机名称"
   os_type     = "cloud-init"
   cores       = data.coder_parameter.cpu_cores.value
