@@ -80,4 +80,9 @@ RUN	cd "/tmp" && \
     rm -r "/tmp/"*
 ADD ./settings.xml /home/$USER/.m2/settings.xml
 
+# coder-server
+ADD ./install.sh /tmp/install.sh
+RUN sudo chown $USER: /tmp/install.sh && \
+    bash /tmp/install.sh
+
 WORKDIR /home/$USER
