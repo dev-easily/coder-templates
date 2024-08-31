@@ -18,24 +18,24 @@ provider "docker" {}
 data "coder_workspace" "me" {}
 data "coder_workspace_owner" "me" {}
 
-data "coder_parameter" "ssh_priv_key" {
-  name        = "ssh 私钥"
-  description = "用于在容器中创建 .ssh 以便使用 git 下载您自己的代码"
-  type        = "string"
-  default =   ""
-  mutable = true
-}
-
-data "coder_parameter" "ssh_public_key" {
-  name        = "ssh 公钥"
-  description = "用于在容器中创建 .ssh 以便使用 git 下载您自己的代码"
-  type        = "string"
-  default =   ""
-  mutable = true
-}
+# data "coder_parameter" "ssh_priv_key" {
+#   name        = "ssh 私钥"
+#   description = "用于在容器中创建 .ssh 以便使用 git 下载您自己的代码"
+#   type        = "string"
+#   default =   ""
+#   mutable = true
+# }
+# 
+# data "coder_parameter" "ssh_public_key" {
+#   name        = "ssh 公钥"
+#   description = "用于在容器中创建 .ssh 以便使用 git 下载您自己的代码"
+#   type        = "string"
+#   default =   ""
+#   mutable = true
+# }
 
 data "coder_parameter" "git_user_name" {
-  name        = "git 用户名"
+  name        = "GIT 用户名"
   description = "用于设置 git 提交时所使用的用户，不填则使用当前用户名称"
   type        = "string"
 
@@ -45,7 +45,7 @@ data "coder_parameter" "git_user_name" {
 }
 
 data "coder_parameter" "git_user_email" {
-  name        = "git 邮箱"
+  name        = "GIT 邮箱"
   description = "用于设置 git 提交时所使用的邮箱，不填则使用当前用户邮箱"
   type        = "string"
 
@@ -69,11 +69,11 @@ resource "coder_agent" "main" {
     ## code-server
     code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
 
-    ## git
-    mkdir ~/.ssh/
-    echo "$SSH_PRIV_KEY" > ~/.ssh/id_rsa
-    echo "$SSH_PUBLIC_KEY" > ~/.ssh/id_rsa.pub
-    chomod 600 ~/.ssh/id_rsa*
+    ## git 不用设置了，将用户中的 ssh 公钥添加到 github 即可
+    #mkdir ~/.ssh/
+    #echo "$SSH_PRIV_KEY"|tr " " "\n" > ~/.ssh/id_rsa
+    #echo "$SSH_PUBLIC_KEY" > ~/.ssh/id_rsa.pub
+    #chmod 600 ~/.ssh/id_rsa*
   EOT
 
   # These environment variables allow you to make Git commits right away after creating a
@@ -87,8 +87,8 @@ resource "coder_agent" "main" {
     GIT_COMMITTER_NAME  = coalesce(data.coder_parameter.git_user_name.value, data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
     GIT_COMMITTER_EMAIL = coalesce(data.coder_parameter.git_user_email.value, data.coder_workspace_owner.me.email)
     
-    SSH_PRIV_KEY        = "${data.coder_parameter.ssh_priv_key.value}"
-    SSH_PUBLIC_KEY      = "${data.coder_parameter.ssh_public_key.value}"
+    #SSH_PRIV_KEY        = "${data.coder_parameter.ssh_priv_key.value}"
+    #SSH_PUBLIC_KEY      = "${data.coder_parameter.ssh_public_key.value}"
   }
 
   # The following metadata blocks are optional. They are used to display
