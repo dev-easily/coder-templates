@@ -67,18 +67,19 @@ RUN sudo chown $USER: /home/$USER/ -R && \
     cargo install crm
 
 # openjdk 17
+ADD ./settings.xml /home/$USER/.m2/settings.xml
 RUN	cd "/tmp" && \
     wget "https://mirrors.tuna.tsinghua.edu.cn/Adoptium/17/jdk/x64/linux/OpenJDK17U-jdk_x64_linux_hotspot_17.0.12_7.tar.gz" && \
     tar -xzf "OpenJDK17U-jdk_x64_linux_hotspot_17.0.12_7.tar.gz" && \
     ls /tmp/ && \
     sudo mv "/tmp/jdk-17.0.12+7" "/opt/" && \
     sudo ln -s "/opt/jdk-17.0.12+7/bin/"* "/usr/bin/" && \
+    sudo chown $USER: /home/$USER/.m2 && \
     rm "/tmp/"* && \
     echo 'public class Main { public static void main(String[] args) { System.out.println("Java code is 正常运行中!"); } }' > Main.java && \
     javac -encoding ISO-8859-1 Main.java && \
     java Main && \
     rm -r "/tmp/"*
-ADD ./settings.xml /home/$USER/.m2/settings.xml
 
 # coder-server
 ADD ./install.sh /tmp/install.sh
