@@ -51,7 +51,7 @@ resource "coder_agent" "main" {
          curl -fL https://mirror.ghproxy.com/$CODE_SERVER_DOWNLOAD_URL -o /tmp/code_server.deb
     done
 
-    dpkg -i /tmp/code_server.deb
+    sudo dpkg -i /tmp/code_server.deb
     code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
 
     # Install the latest code-server.
