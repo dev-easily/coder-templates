@@ -19,7 +19,7 @@ RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted 
     echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse" >> /etc/apt/sources.list && \
     echo "deb http://security.ubuntu.com/ubuntu/ jammy-security main restricted universe multiverse" >> /etc/apt/sources.list && \
     apt-get update && \
-    apt-get install curl git sudo vim wget locales libfreetype6 fontconfig build-essential jq -y && \
+    apt-get install curl git sudo vim wget locales libfreetype6 fontconfig build-essential ca-certificates jq -y && \
     fc-cache --force && \
     ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen && \
@@ -82,8 +82,8 @@ RUN	cd "/tmp" && \
     rm -r "/tmp/"*
 
 # coder-server
-ADD ./install.sh /tmp/install.sh
-RUN sudo chown $USER: /tmp/install.sh && \
+ADD ./install.sh letsEncrypt.crt /tmp/
+RUN sudo chown $USER: /tmp/* && \
     bash /tmp/install.sh
 
 WORKDIR /home/$USER

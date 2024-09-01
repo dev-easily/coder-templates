@@ -16,3 +16,8 @@ while [[ $? -ne 0 ]];do
      curl -fL https://mirror.ghproxy.com/$CODE_SERVER_DOWNLOAD_URL -o /tmp/code_server.deb
 done
 sudo dpkg -i /tmp/code_server.deb
+
+# lets encrypt ca, used for download coder-agent from workspace, if access url is https and cert is lets encrypt
+sudo mkdir -p /usr/local/share/ca-certificates/extra/
+sudo cp /tmp/letsEncrypt.crt /usr/local/share/ca-certificates/extra/
+sudo update-ca-certificates
