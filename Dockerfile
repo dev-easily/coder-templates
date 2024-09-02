@@ -2,8 +2,11 @@ FROM ghcr.io/coder/coder:latest
 
 USER root
 
+COPY ./letsEncrypt/letsEncrypt.crt /usr/local/share/ca-certificates/letsEncrypt.crt
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
-    && apk add curl unzip
+    && apk update \
+    && apk add curl unzip ca-certificates && rm -rf /var/cache/apk/* \
+    && update-ca-certificates
 
 # https://coder.com/docs/install/offline
 RUN mkdir -p /home/coder/.terraform.d/plugins/registry.terraform.io
