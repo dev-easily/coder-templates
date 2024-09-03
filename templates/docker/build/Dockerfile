@@ -42,7 +42,7 @@ RUN cd "/tmp" && \
     sudo ln -s "/opt/go/bin/"* "/usr/bin/" && \
     go version && \
     go env -w GO111MODULE=on && \
-    go env -w GOPROXY=https://mirrors.aliyun.com/goproxy/,direct && \
+    go env -w GOPROXY=https://goproxy.io,direct && \
     rm -r "/tmp/"*
 
 # nodejs
