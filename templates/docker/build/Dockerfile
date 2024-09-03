@@ -44,7 +44,7 @@ RUN cd "/tmp" && \
     go env -w GO111MODULE=on && \
     go env -w GOPROXY=https://goproxy.io,direct && \
     go install golang.org/x/tools/cmd/godoc@latest && \
-    echo "export PATH=\$PATH:~/go/bin" >> ~/.bash_profile &&
+    echo "export PATH=\$PATH:~/go/bin" >> ~/.bash_profile && \
     rm -r "/tmp/"*
 
 # nodejs

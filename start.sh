@@ -8,6 +8,6 @@ export POSTGRES_DB="eucoder" # 请修改
 # https://github.com/coder/coder/blob/main/provisionersdk/scripts/bootstrap_linux.sh
 # 或者安装到系统中
 # https://github.com/sempie/coder-templates/tree/main/ca-install
-export CODER_ACCESS_URL="http://192.168.0.96:7080" 
+export CODER_ACCESS_URL="https://coder.eusoftbank.com" 
 docker compose -f ./docker-compose.yaml stop
 docker compose -f ./docker-compose.yaml up -d
