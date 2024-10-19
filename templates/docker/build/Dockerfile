@@ -56,6 +56,8 @@ RUN cd "/tmp" && \
     npm config set registry https://registry.npmmirror.com && \
     #wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash - && \
     #pnpm setup && \
+    npm install -g pnpm && \
+    echo "export PATH=\$PATH:/opt/node-v20.13.1-linux-x64/bin/" >> ~/.bash_profile && \
     npm install --global node-gyp && \
     rm -r "/tmp/"*
   
