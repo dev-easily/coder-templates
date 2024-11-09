@@ -30,6 +30,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./registry.terraform.io:/home/coder/.terraform.d/plugins/registry.terraform.io
+      - ./hosts:/etc/hosts
     depends_on:
       database:
         condition: service_healthy

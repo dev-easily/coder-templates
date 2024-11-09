@@ -70,14 +70,14 @@ RUN sudo chown $USER: /home/$USER/ -R && \
     cat /home/$USER/.cargo/config.toml && \
     cargo install crm
 
-# openjdk 17
+# openjdk 21
 ADD ./settings.xml /home/$USER/.m2/settings.xml
 RUN	cd "/tmp" && \
-    wget "https://mirrors.tuna.tsinghua.edu.cn/Adoptium/17/jdk/x64/linux/OpenJDK17U-jdk_x64_linux_hotspot_17.0.12_7.tar.gz" && \
-    tar -xzf "OpenJDK17U-jdk_x64_linux_hotspot_17.0.12_7.tar.gz" && \
+    wget "https://mirrors.tuna.tsinghua.edu.cn/Adoptium/21/jdk/x64/linux/OpenJDK21U-jdk_x64_linux_hotspot_21.0.5_11.tar.gz" && \
+    tar -xzf "OpenJDK21U-jdk_x64_linux_hotspot_21.0.5_11.tar.gz" && \
     ls /tmp/ && \
-    sudo mv "/tmp/jdk-17.0.12+7" "/opt/" && \
-    sudo ln -s "/opt/jdk-17.0.12+7/bin/"* "/usr/bin/" && \
+    sudo mv "/tmp/jdk-21.0.5+11" "/opt/" && \
+    sudo ln -s "/opt/jdk-21.0.5+11/bin/"* "/usr/bin/" && \
     sudo chown $USER: /home/$USER/.m2 && \
     rm "/tmp/"* && \
     echo 'public class Main { public static void main(String[] args) { System.out.println("Java code is 正常运行中!"); } }' > Main.java && \
@@ -86,8 +86,10 @@ RUN	cd "/tmp" && \
     rm -r "/tmp/"*
 
 # coder-server
-ADD ./install.sh letsEncrypt.crt /tmp/
+ADD ./install*.sh letsEncrypt.crt /tmp/
 RUN sudo chown $USER: /tmp/* && \
     bash /tmp/install.sh
 
+RUN sudo chown $USER: /tmp/* && \
+    sudo bash /tmp/install_all.sh
 WORKDIR /home/$USER
