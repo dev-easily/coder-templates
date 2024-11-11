@@ -11,5 +11,8 @@ sudo cp dart-sass/sass /usr/bin
 
 sudo chmod +x /usr/bin/hugo
 sudo chmod +x /usr/bin/sass
+
+echo "export HUGO_MODULE_PROXY=https://goproxy.cn" >> ~/.bash_profile
+
 rm -rf /tmp/*
 exit 0
