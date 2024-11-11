@@ -1,0 +1,24 @@
+# docker build --build-arg USER=youruser .
+FROM ubuntu:24.04
+
+ADD ./*.sh letsEncrypt.crt /tmp/
+
+ARG USER=coder
+# you know why
+RUN echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ noble main restricted universe multiverse" > /etc/apt/sources.list && \
+    echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ noble-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ noble-backports main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb http://security.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse" >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install curl git sudo vim wget locales libfreetype6 fontconfig build-essential ca-certificates jq -y && \
+    fc-cache --force && \
+    ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen && \
+    useradd -m -d /home/$USER --groups sudo --shell /bin/bash ${USER} && \
+    echo "${USER} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USER} && \
+    chmod 0440 /etc/sudoers.d/${USER} && \
+    sudo chown $USER: /tmp/* && \
+    bash /tmp/install.sh && \
+    bash /tmp/install_all.sh
+
+USER ${USER}

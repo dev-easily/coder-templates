@@ -1,7 +1,7 @@
 # docker build --build-arg USER=youruser .
-FROM ubuntu:22.04
+FROM coder_basic_binary:latest
 
-ENV GO_VERSION=1.22.3
+ENV GO_VERSION=1.23.3
 
 ENV RUSTUP_DIST_SERVER=https://rsproxy.cn
 ENV RUSTUP_UPDATE_ROOT=https://rsproxy.cn/rustup
@@ -13,27 +13,13 @@ ENV ELECTRON_CUSTOM_DIR=30.0.6
 ENV ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/
 
 ARG USER=coder
-# you know why
-RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse" > /etc/apt/sources.list && \
-    echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
-    echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse" >> /etc/apt/sources.list && \
-    echo "deb http://security.ubuntu.com/ubuntu/ jammy-security main restricted universe multiverse" >> /etc/apt/sources.list && \
-    apt-get update && \
-    apt-get install curl git sudo vim wget locales libfreetype6 fontconfig build-essential ca-certificates jq -y && \
-    fc-cache --force && \
-    ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
-    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen && \
-    useradd -m -d /home/$USER --groups sudo --shell /bin/bash ${USER} && \
-    echo "${USER} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USER} && \
-    chmod 0440 /etc/sudoers.d/${USER}
-
 USER ${USER}
 
 # python
-RUN sudo apt install python3 python3-pip -y && pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/ && \
-    pip config set global.index https://mirrors.aliyun.com/pypi && \
-    pip config set global.trusted-host mirrors.aliyun.com && \
-    pip install setuptools
+#RUN mkdir -p ~/miniconda3 && \
+#    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh && \
+#    bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3 && \
+#    rm ~/miniconda3/miniconda.sh
 
 # golang
 RUN cd "/tmp" && \
@@ -56,6 +42,7 @@ RUN cd "/tmp" && \
     npm config set registry https://registry.npmmirror.com && \
     #wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash - && \
     #pnpm setup && \
+    sudo chown $USER: /opt/node* -R && \
     npm install -g pnpm && \
     echo "export PATH=\$PATH:/opt/node-v20.13.1-linux-x64/bin/" >> ~/.bash_profile && \
     npm install --global node-gyp && \
@@ -71,25 +58,18 @@ RUN sudo chown $USER: /home/$USER/ -R && \
     cargo install crm
 
 # openjdk 21
-ADD ./settings.xml /home/$USER/.m2/settings.xml
-RUN	cd "/tmp" && \
-    wget "https://mirrors.tuna.tsinghua.edu.cn/Adoptium/21/jdk/x64/linux/OpenJDK21U-jdk_x64_linux_hotspot_21.0.5_11.tar.gz" && \
-    tar -xzf "OpenJDK21U-jdk_x64_linux_hotspot_21.0.5_11.tar.gz" && \
-    ls /tmp/ && \
-    sudo mv "/tmp/jdk-21.0.5+11" "/opt/" && \
-    sudo ln -s "/opt/jdk-21.0.5+11/bin/"* "/usr/bin/" && \
-    sudo chown $USER: /home/$USER/.m2 && \
-    rm "/tmp/"* && \
-    echo 'public class Main { public static void main(String[] args) { System.out.println("Java code is 正常运行中!"); } }' > Main.java && \
-    javac -encoding ISO-8859-1 Main.java && \
-    java Main && \
-    rm -r "/tmp/"*
+#ADD ./settings.xml /home/$USER/.m2/settings.xml
+#RUN	cd "/tmp" && \
+#    wget "https://mirrors.tuna.tsinghua.edu.cn/Adoptium/21/jdk/x64/linux/OpenJDK21U-jdk_x64_linux_hotspot_21.0.5_11.tar.gz" && \
+#    tar -xzf "OpenJDK21U-jdk_x64_linux_hotspot_21.0.5_11.tar.gz" && \
+#    ls /tmp/ && \
+#    sudo mv "/tmp/jdk-21.0.5+11" "/opt/" && \
+#    sudo ln -s "/opt/jdk-21.0.5+11/bin/"* "/usr/bin/" && \
+#    sudo chown $USER: /home/$USER/.m2 && \
+#    rm "/tmp/"* && \
+#    echo 'public class Main { public static void main(String[] args) { System.out.println("Java code is 正常运行中!"); } }' > Main.java && \
+#    javac -encoding ISO-8859-1 Main.java && \
+#    java Main && \
+#    rm -r "/tmp/"*
 
-# coder-server
-ADD ./install*.sh letsEncrypt.crt /tmp/
-RUN sudo chown $USER: /tmp/* && \
-    bash /tmp/install.sh
-
-RUN sudo chown $USER: /tmp/* && \
-    sudo bash /tmp/install_all.sh
 WORKDIR /home/$USER
