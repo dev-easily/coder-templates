@@ -6,17 +6,17 @@ cd ./plugins
 export PVE_PROVIDER_VERSION=3.0.1-rc3
 echo "Adding telmate/terraform-provider-proxmox v${PVE_PROVIDER_VERSION}" \
     && mkdir -p telmate/proxmox && cd telmate/proxmox \
-    && curl -LOs https://mirror.ghproxy.com/https://github.com/Telmate/terraform-provider-proxmox/releases/download/v${PVE_PROVIDER_VERSION}/terraform-provider-proxmox_${PVE_PROVIDER_VERSION}_linux_amd64.zip
+    && curl -LOs https://www.ghproxy.cn/https://github.com/Telmate/terraform-provider-proxmox/releases/download/v${PVE_PROVIDER_VERSION}/terraform-provider-proxmox_${PVE_PROVIDER_VERSION}_linux_amd64.zip
 
 export CODER_PROVIDER_VERSION=1.0.1
 echo "Adding coder/coder v${CODER_PROVIDER_VERSION}" \
     && mkdir -p coder/coder && cd coder/coder \
-    && curl -LOs https://mirror.ghproxy.com/https://github.com/coder/terraform-provider-coder/releases/download/v${CODER_PROVIDER_VERSION}/terraform-provider-coder_${CODER_PROVIDER_VERSION}_linux_amd64.zip
+    && curl -LOs https://www.ghproxy.cn/https://github.com/coder/terraform-provider-coder/releases/download/v${CODER_PROVIDER_VERSION}/terraform-provider-coder_${CODER_PROVIDER_VERSION}_linux_amd64.zip
     
 export DOCKER_PROVIDER_VERSION=3.0.2
 echo "Adding kreuzwerker/docker v${DOCKER_PROVIDER_VERSION}" \
     && mkdir -p kreuzwerker/docker && cd kreuzwerker/docker \
-    && curl -LOs https://mirror.ghproxy.com/https://github.com/kreuzwerker/terraform-provider-docker/releases/download/v${DOCKER_PROVIDER_VERSION}/terraform-provider-docker_${DOCKER_PROVIDER_VERSION}_linux_amd64.zip
+    && curl -LOs https://www.ghproxy.cn/https://github.com/kreuzwerker/terraform-provider-docker/releases/download/v${DOCKER_PROVIDER_VERSION}/terraform-provider-docker_${DOCKER_PROVIDER_VERSION}_linux_amd64.zip
 
 export KUBERNETES_PROVIDER_VERSION=2.23.0
 echo "Adding hashicorp/kubernetes v${KUBERNETES_PROVIDER_VERSION}" \
