@@ -1,12 +1,12 @@
 # docker build --build-arg USER=youruser .
 FROM coder_basic_binary:latest
 
-ENV GO_VERSION=1.23.3
+ENV GO_VERSION=1.24.0
 
 ENV RUSTUP_DIST_SERVER=https://rsproxy.cn
 ENV RUSTUP_UPDATE_ROOT=https://rsproxy.cn/rustup
 
-ENV NODE_VERSION=20.13.1
+ENV NODE_VERSION=22.14.0
 ENV NVM_NODEJS_ORG_MIRROR=https://mirrors.ustc.edu.cn/node/
 ENV ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
 ENV ELECTRON_CUSTOM_DIR=30.0.6
@@ -38,14 +38,14 @@ RUN cd "/tmp" && \
 RUN cd "/tmp" && \
     wget https://registry.npmmirror.com/-/binary/node/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz && \
     sudo tar xvf node-v${NODE_VERSION}-linux-x64.tar.xz -C /opt/ && \
-    sudo ln -s "/opt/node-v20.13.1-linux-x64/bin/"* "/usr/bin/" && \
-    node --version && \
+    sudo ln -s "/opt/node-v${NODE_VERSION}-linux-x64/bin/"* "/usr/bin/" && \
+    node --version && \s
     npm config set registry https://registry.npmmirror.com && \
     #wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash - && \
     #pnpm setup && \
     sudo chown $USER: /opt/node* -R && \
     npm install -g pnpm && \
-    echo "export PATH=\$PATH:/opt/node-v20.13.1-linux-x64/bin/" >> ~/.bash_profile && \
+    echo "export PATH=\$PATH:/opt/node-v${NODE_VERSION}-linux-x64/bin/" >> ~/.bash_profile && \
     npm install --global node-gyp && \
     rm -r "/tmp/"*
   
