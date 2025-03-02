@@ -39,7 +39,7 @@ RUN cd "/tmp" && \
     wget https://registry.npmmirror.com/-/binary/node/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz && \
     sudo tar xvf node-v${NODE_VERSION}-linux-x64.tar.xz -C /opt/ && \
     sudo ln -s "/opt/node-v${NODE_VERSION}-linux-x64/bin/"* "/usr/bin/" && \
-    node --version && \s
+    node --version && \
     npm config set registry https://registry.npmmirror.com && \
     #wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash - && \
     #pnpm setup && \
